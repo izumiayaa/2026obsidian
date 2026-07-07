@@ -8,36 +8,12 @@
         "type": "tabs",
         "children": [
           {
-            "id": "a7310768f5f3e409",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "templates/範本-通用.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": true,
-                "backlinkOpts": {
-                  "collapseAll": false,
-                  "extraContext": false,
-                  "sortOrder": "alphabetical",
-                  "showSearch": false,
-                  "searchQuery": "",
-                  "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
-                }
-              },
-              "icon": "lucide-file",
-              "title": "範本-通用"
-            }
-          },
-          {
             "id": "55f59ac5ed8b5b1c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00_Inbox/未命名.md",
+                "file": "00_Inbox/20260707_JP通行證成效.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -52,11 +28,10 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "未命名"
+              "title": "20260707_JP通行證成效"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -129,12 +104,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "00_Inbox/未命名.md",
+                "file": "00_Inbox/20260707_JP通行證成效.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "未命名 的對外連結"
+              "title": "20260707_JP通行證成效 的對外連結"
             }
           },
           {
@@ -172,13 +147,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "00_Inbox/未命名.md",
+                "file": "00_Inbox/20260707_JP通行證成效.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "未命名 的大綱"
+              "title": "20260707_JP通行證成效 的大綱"
             }
           }
         ]
@@ -203,10 +178,10 @@
   },
   "active": "a597d3ee035194a6",
   "lastOpenFiles": [
+    "archive",
     "templates/範本-通用.md",
-    "00_Inbox/未命名.md",
+    "00_Inbox/20260707_JP通行證成效.md",
     "00_Inbox/20260707 JP通行證成效分析.md",
-    "未命名",
     "DailyNotes",
     "02_Projects",
     "templates",
