@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00_Inbox/20260707_JP通行證成效.md",
+                "file": "01_Knowledge/2026-07-07 Notion與Obsidian比較與工作知識庫定位.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "20260707_JP通行證成效"
+              "title": "2026-07-07 Notion與Obsidian比較與工作知識庫定位"
             }
           }
         ]
@@ -104,12 +104,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "00_Inbox/20260707_JP通行證成效.md",
+                "file": "01_Knowledge/2026-07-07 Notion與Obsidian比較與工作知識庫定位.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "20260707_JP通行證成效 的對外連結"
+              "title": "2026-07-07 Notion與Obsidian比較與工作知識庫定位 的對外連結"
             }
           },
           {
@@ -147,13 +147,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "00_Inbox/20260707_JP通行證成效.md",
+                "file": "01_Knowledge/2026-07-07 Notion與Obsidian比較與工作知識庫定位.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "20260707_JP通行證成效 的大綱"
+              "title": "2026-07-07 Notion與Obsidian比較與工作知識庫定位 的大綱"
             }
           }
         ]
@@ -178,8 +178,9 @@
   },
   "active": "55f59ac5ed8b5b1c",
   "lastOpenFiles": [
-    "DailyNotes/2026-07-07.md",
     "00_Inbox/20260707_JP通行證成效.md",
+    "01_Knowledge/2026-07-07 Notion與Obsidian比較與工作知識庫定位.md",
+    "DailyNotes/2026-07-07.md",
     "archive",
     "templates/範本-通用.md",
     "00_Inbox/20260707 JP通行證成效分析.md",
