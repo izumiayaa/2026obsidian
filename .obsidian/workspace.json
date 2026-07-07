@@ -8,17 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "55f59ac5ed8b5b1c",
+            "id": "6c2721a94f723427",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "03_Research/2026-06-02 Web策略/2026-05 平台市場轉型方向評估報告.md",
-                "mode": "preview",
+                "file": "00_Inbox/2026-07-07 留存規格know-how.md",
+                "mode": "source",
                 "source": false,
                 "backlinks": true,
                 "backlinkOpts": {
-                  "collapseAll": true,
+                  "collapseAll": false,
                   "extraContext": false,
                   "sortOrder": "alphabetical",
                   "showSearch": false,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "2026-05 平台市場轉型方向評估報告"
+              "title": "2026-07-07 留存規格know-how"
             }
           }
         ]
@@ -104,12 +104,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "03_Research/2026-06-02 Web策略/2026-05 平台市場轉型方向評估報告.md",
+                "file": "00_Inbox/2026-07-07 留存規格know-how.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "2026-05 平台市場轉型方向評估報告 的對外連結"
+              "title": "2026-07-07 留存規格know-how 的對外連結"
             }
           },
           {
@@ -147,13 +147,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "03_Research/2026-06-02 Web策略/2026-05 平台市場轉型方向評估報告.md",
+                "file": "00_Inbox/2026-07-07 留存規格know-how.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "2026-05 平台市場轉型方向評估報告 的大綱"
+              "title": "2026-07-07 留存規格know-how 的大綱"
             }
           }
         ]
@@ -176,27 +176,29 @@
       "random-note:開始漫遊筆記": false
     }
   },
-  "active": "55f59ac5ed8b5b1c",
+  "active": "6c2721a94f723427",
   "lastOpenFiles": [
-    "01_Knowledge/2026-07-04 台灣APP競品面向.md",
-    "03_Research/2026-06-02 Web策略/2026-07-07 台灣幣商系統vs東南亞代理代幣系統.md",
-    "03_Research/2026-06-02 Web策略/2026-05 平台市場轉型方向評估報告.md",
-    "03_Research/2026-06-02 Web策略",
+    "templates/範本-通用.md",
     "03_Research/2026-07-07 通行證相關研究/2026070 JP通行證成效.md",
+    "DailyNotes/2026-07-07.md",
+    "00_Inbox/2026-07-07 留存規格know-how.md",
+    "2026obsidian",
+    "DailyNotes/Invalid date.md",
     "01_Knowledge/2026-07-07 Notion與Obsidian比較與工作知識庫定位.md",
-    "03_Research/2026-07-07 通行證相關研究",
     "01_Knowledge/2026-07-07 AI生成美術在Slot遊戲的應用與風險.md",
+    "01_Knowledge/2026-07-04 台灣APP競品面向.md",
+    "03_Research/2026-06-02 Web策略/2026-05 平台市場轉型方向評估報告.md",
+    "03_Research/2026-06-02 Web策略/2026-07-07 台灣幣商系統vs東南亞代理代幣系統.md",
+    "03_Research/2026-06-02 Web策略",
+    "03_Research/2026-07-07 通行證相關研究",
     "03_Research/2026-07-07 蔡阿嘎合作成效/2026-07-07 金好運YouTube蔡阿嘎合作流量分析.md",
     "03_Research/2026-07-07 蔡阿嘎合作成效",
     "03_Research",
-    "DailyNotes/2026-07-07.md",
     "archive",
-    "templates/範本-通用.md",
     "00_Inbox/20260707 JP通行證成效分析.md",
     "DailyNotes",
     "02_Projects",
     "templates",
-    "attachments",
-    "01_Knowledge"
+    "attachments"
   ]
 }
