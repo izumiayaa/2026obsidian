@@ -18,7 +18,7 @@
                 "source": false,
                 "backlinks": true,
                 "backlinkOpts": {
-                  "collapseAll": false,
+                  "collapseAll": true,
                   "extraContext": false,
                   "sortOrder": "alphabetical",
                   "showSearch": false,
@@ -176,11 +176,12 @@
       "random-note:開始漫遊筆記": false
     }
   },
-  "active": "a597d3ee035194a6",
+  "active": "55f59ac5ed8b5b1c",
   "lastOpenFiles": [
+    "DailyNotes/2026-07-07.md",
+    "00_Inbox/20260707_JP通行證成效.md",
     "archive",
     "templates/範本-通用.md",
-    "00_Inbox/20260707_JP通行證成效.md",
     "00_Inbox/20260707 JP通行證成效分析.md",
     "DailyNotes",
     "02_Projects",
