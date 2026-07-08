@@ -32,18 +32,18 @@
             }
           },
           {
-            "id": "adb95ccf52c9ac12",
+            "id": "ddd8c4a0d0210a85",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00_Inbox/2026-07-08 道具卡循環初版.md",
+                "file": "00_Inbox/2026-07-08 知識庫維護想法.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "2026-07-08 道具卡循環初版"
+              "title": "2026-07-08 知識庫維護想法"
             }
           }
         ],
@@ -192,10 +192,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "adb95ccf52c9ac12",
+  "active": "ddd8c4a0d0210a85",
   "lastOpenFiles": [
-    "00_Inbox/2026-07-07 留存規格know-how.md",
     "00_Inbox/2026-07-08 道具卡循環初版.md",
+    "00_Inbox/2026-07-08 知識庫維護想法.md",
+    "00_Inbox/2026-07-07 留存規格know-how.md",
     "templates/範本-通用.md",
     "03_Research/2026-07-07 通行證相關研究/2026070 JP通行證成效.md",
     "DailyNotes/2026-07-07.md",
