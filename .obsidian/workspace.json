@@ -172,7 +172,6 @@
       "templates:插入模板": false,
       "command-palette:開啟命令面板": false,
       "bases:建立新的 base": false,
-      "obsidian-git:Open Git source control": false,
       "random-note:開始漫遊筆記": false
     }
   },
