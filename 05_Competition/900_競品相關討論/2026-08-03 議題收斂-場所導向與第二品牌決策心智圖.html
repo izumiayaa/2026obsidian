@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>議題收斂：場所導向與第二品牌決策</title>
+<style>
+:root{
+  --bg:#0f1419; --panel:#161c24; --line:#2a3441; --txt:#e6edf3; --dim:#8b98a5;
+  --cash:#4a9de8; --place:#e8734a; --none:#8b98a5;
+  --q1:#e8734a; --q2:#c77dd4; --data:#4ac9a8; --warn:#e8c34a;
+  --ok:#3fb950; --bad:#e84a6f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);min-height:100vh;
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+ font-size:15px;line-height:1.6;padding:24px 20px 80px}
+header{max-width:1180px;margin:0 auto 20px}
+h1{font-size:23px;font-weight:700;letter-spacing:.5px}
+.sub{color:var(--dim);font-size:13px;margin-top:6px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+button{background:var(--panel);color:var(--txt);border:1px solid var(--line);
+ padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;font-family:inherit;transition:.15s}
+button:hover{border-color:var(--cash);color:#fff}
+#search{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+ padding:7px 12px;border-radius:7px;font-size:13px;min-width:200px;font-family:inherit}
+#search:focus{outline:none;border-color:var(--cash)}
+.prog{margin-left:auto;color:var(--dim);font-size:13px;white-space:nowrap}
+.prog b{color:var(--ok)}
+.wrap{max-width:1180px;margin:0 auto}
+
+.board{background:linear-gradient(135deg,#1d2733,#161c24);border:1px solid var(--line);
+ border-radius:10px;padding:16px 20px;margin-bottom:18px}
+.board h2{font-size:17px;font-weight:700;margin-bottom:10px}
+.board p{color:var(--dim);font-size:13.5px;margin-bottom:12px}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.col{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#11161d}
+.col h3{font-size:13px;font-weight:600;margin-bottom:8px}
+.col.cash h3{color:var(--cash)} .col.place h3{color:var(--place)} .col.none h3{color:var(--none)}
+.brand{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;color:var(--dim)}
+.brand b{color:var(--txt);font-weight:500}
+.up{color:var(--ok)} .dn{color:var(--bad)} .hl{color:var(--warn);font-weight:700}
+.us{border-color:var(--warn)!important;background:#1a1410!important}
+
+.branch{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;background:var(--panel);overflow:hidden}
+.branch.hide{display:none}
+.bhead{display:flex;align-items:center;gap:11px;padding:13px 16px;cursor:pointer;
+ border-left:4px solid var(--bc);user-select:none}
+.bhead:hover{background:#1b222c}
+.caret{color:var(--dim);font-size:11px;transition:transform .18s;width:11px;flex-shrink:0}
+.branch.open .caret{transform:rotate(90deg)}
+.bnum{background:var(--bc);color:#0b0f14;font-weight:700;font-size:11.5px;padding:2px 9px;border-radius:20px;flex-shrink:0}
+.btitle{font-weight:600;font-size:15.5px;flex:1}
+.btag{font-size:11.5px;color:var(--dim);border:1px solid var(--line);padding:2px 8px;border-radius:20px}
+.bbody{display:none;padding:2px 16px 14px 40px}
+.branch.open .bbody{display:block}
+
+.node{margin:9px 0;padding-left:14px;border-left:2px solid var(--line)}
+.node.hit{border-left-color:var(--warn)}
+.nhead{display:flex;align-items:flex-start;gap:9px}
+.chk{width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;flex-shrink:0;
+ cursor:pointer;margin-top:4px;position:relative;transition:.15s}
+.chk:hover{border-color:var(--ok)}
+.chk.done{background:var(--ok);border-color:var(--ok)}
+.chk.done::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;height:9px;
+ border:solid #0b0f14;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ntitle{font-weight:600;font-size:14px;cursor:pointer;flex:1}
+.node.done>.nhead .ntitle{color:var(--dim);text-decoration:line-through}
+.ndesc{color:var(--dim);font-size:13px;margin:4px 0 0 25px}
+.kids{margin-left:25px}
+.leaf{color:var(--dim);font-size:12.8px;margin:5px 0;padding-left:13px;position:relative}
+.leaf::before{content:"–";position:absolute;left:0;color:var(--line)}
+.leaf b{color:var(--txt);font-weight:600}
+.ev{margin:8px 0 0 25px;padding:8px 11px;background:#11161d;border:1px solid var(--line);
+ border-radius:6px;font-size:12.5px;color:var(--dim)}
+.ev b{color:var(--warn)}
+.q{margin:9px 0 0 25px;padding:8px 11px;background:#1a1410;border-left:3px solid var(--warn);
+ border-radius:0 6px 6px 0;font-size:12.8px;color:#e8d5a8}
+.q::before{content:"決策問題　";color:var(--warn);font-weight:700;font-size:11.5px}
+.tier{margin:9px 0 0 25px;padding:9px 12px;border-radius:6px;font-size:12.8px}
+.tier.a{background:#0f1f14;border-left:3px solid var(--ok);color:#a8e8c0}
+.tier.b{background:#1a1410;border-left:3px solid var(--warn);color:#e8d5a8}
+.tier.c{background:#1f1114;border-left:3px solid var(--bad);color:#e8a8b8}
+.tier b{display:block;margin-bottom:4px;font-size:12px;letter-spacing:.5px}
+table{width:calc(100% - 25px);border-collapse:collapse;margin:9px 0 0 25px;font-size:12.5px}
+th,td{border:1px solid var(--line);padding:5px 9px;text-align:left}
+th{background:#11161d;color:var(--dim);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.tree{margin:9px 0 0 25px;padding:12px;background:#11161d;border:1px solid var(--line);
+ border-radius:6px;font-family:var(--font-mono),monospace;font-size:12px;color:var(--dim);white-space:pre;overflow-x:auto;line-height:1.7}
+footer{max-width:1180px;margin:26px auto 0;color:var(--dim);font-size:12px;
+ border-top:1px solid var(--line);padding-top:14px;line-height:1.8}
+@media print{body{background:#fff;color:#000}.toolbar,.chk{display:none}.bbody{display:block!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>議題收斂：場所導向與第二品牌決策</h1>
+  <div class="sub">以「現金網導向 vs 場所導向」重構競品分析　·　資料：每日總表 2025-01~2026-07、競品週報 2026-01~07　·　產出 2026-08-03</div>
+  <div class="toolbar">
+    <button id="exp">全部展開</button>
+    <button id="col">全部收合</button>
+    <input id="search" placeholder="搜尋關鍵字…">
+    <button id="clr">清除勾選</button>
+    <span class="prog">討論進度 <b id="pn">0</b> / <span id="pt">0</span></span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="board">
+    <h2>牌桌：兩端市場的現況</h2>
+    <p>依內容訊號（ATG／RSG 正版原廠 vs 超八／柏青／賽馬／7PK）分類。<b>兩端都有人在成長，輸的是站在中間的。</b></p>
+    <div class="map">
+      <div class="col place">
+        <h3>場所導向（紅海，5 家）</h3>
+        <div class="brand"><b>包你發</b> <span>458M <span class="dn">−5.6%</span></span></div>
+        <div class="brand"><b>豪神</b> <span>300M <span class="up">+26.5%</span></span></div>
+        <div class="brand"><b>錢街</b> <span>100M <span class="up">+41.9%</span></span></div>
+        <div class="brand"><b>HUGA</b> <span>76M <span class="up">+9.3%</span></span></div>
+        <div class="brand"><b>王牌</b> <span>27M <span class="dn">−24.9%</span></span></div>
+      </div>
+      <div class="col cash">
+        <h3>現金網導向（僅 1 家）</h3>
+        <div class="brand"><b>嚦咕</b> <span>260M <span class="up">+104.3%</span></span></div>
+        <div class="brand" style="margin-top:8px;font-size:11.5px">全市場定位最清楚、成長最快</div>
+      </div>
+      <div class="col none">
+        <h3>無焦點（兩邊都做）</h3>
+        <div class="brand"><b>老子</b> <span>186M <span>+1.1%</span></span></div>
+        <div class="brand" style="margin-top:8px;font-size:11.5px">王牌訊號量全市場最多（32）卻衰退最深，見議題一</div>
+      </div>
+      <div class="col none us">
+        <h3 style="color:var(--warn)">資料不足，無法定位</h3>
+        <div class="brand"><b>星城</b> <span>2,028M <span class="dn">−11.5%</span></span></div>
+        <div class="brand"><b>金好運</b> <span>305M <span class="dn">−15.6%</span></span></div>
+        <div class="brand"><b>滿貫大亨</b> <span>208M <span class="dn">−25.2%</span></span></div>
+        <div class="brand" style="margin-top:8px;font-size:11.5px;color:var(--warn)">我們自己也答不出客群從哪端來</div>
+      </div>
+    </div>
+  </div>
+  <div id="tree"></div>
+</div>
+
+<footer>
+<b>資料限制（討論時務必一併說明）</b><br>
+1. 訊號分類用關鍵字比對，會漏掉不帶關鍵字的內容。星城訊號近零是因其自研內容不用這些名字，<b>不代表沒有客群傾向</b>。<br>
+2. 金好運、滿貫大亨週報登錄不完整，訊號 0 無法解讀。<br>
+3. 「現金網／場所」是從內容、代言、文案、ASO 反推的框架，<b>未經玩家調研驗證</b>。<br>
+4. 贈禮軌道欄位只算「拿贈禮做活動」的次數，<b>常駐贈禮系統本身不會出現在週報，「0」不代表沒有</b>。
+</footer>
+
+<script>
+const DATA=[
+{n:1,c:"--q1",t:"議題一：場所導向要不要走下去？",tag:"決策",
+ nodes:[
+ {t:"先破除一個誤解：場所端不是死路",d:"擁擠，但不是沒得打。",
+  table:`<tr><th>品牌</th><th>2026H1</th><th>YoY</th><th>它的專屬物</th></tr>
+  <tr><td>錢街</td><td class="n">100M</td><td class="n up">+41.9%</td><td>組隊／戰隊競賽生態（排行榜佔活動 40%）</td></tr>
+  <tr><td>豪神</td><td class="n">300M</td><td class="n up">+26.5%</td><td>媽祖信仰 IP ＋ 吳宗憲</td></tr>
+  <tr><td>HUGA</td><td class="n">76M</td><td class="n up">+9.3%</td><td>「野蠻世界」還原 ＋ 陳雷</td></tr>
+  <tr><td>包你發</td><td class="n">458M</td><td class="n dn">−5.6%</td><td>規模，但無鮮明錨點</td></tr>
+  <tr><td>王牌</td><td class="n">27M</td><td class="n dn">−24.9%</td><td class="hl">無</td></tr>`,
+  ev:"<b>場所端有三家在成長。</b>問題不是「場所端好不好」，是「我們在場所端有沒有專屬物」。"},
+ {t:"反面教材：王牌為什麼是全市場衰退最深的",d:"它什麼都做了。",
+  kids:["現金網訊號 <b>10</b>（ATG 賽特1／賽特2／武俠／赤三國／續戰賽特）—— 全市場最高",
+        "場所訊號 <b>22</b>（柏青 8 款機台、大紅花 GOLD、戰國 RENO…）—— 全市場最高",
+        "加總 32 個訊號，遠超任何人；新機 45 檔也是全市場最多",
+        "官方定位語：「公開公正全自然機率」"],
+  ev:"「公開公正」是<b>防禦性訴求</b>——回答「為什麼不要離開」，不是「為什麼要來」。而且豪神商店頁也寫「公平公正，拒絕遙控操作」，這是全品類標配話術。<br><b>王牌沒有一個「只有在這裡才拿得到」的東西。</b>"},
+ {t:"場所端的成功三要件（從三家成長者反推）",d:"",
+  kids:["<b>① 一個專屬的情感錨點</b>：豪神＝媽祖信仰＋公益、HUGA＝野蠻世界懷舊＋陳雷、錢街＝競賽社群歸屬",
+        "<b>② 自研內容能力</b>：場所客群<b>不吃「正版」信號</b>，可省授權金（豪神賽特、豪神 7PK、豪神 21 點都是自研）",
+        "<b>③ 社交／轉移軌道</b>：實體遊藝場本身就是社交場所，這端客群社交需求高（豪神贈禮遊戲化 4 檔、錢街組隊戰隊 6 檔）"],
+  q:"這三件我們各有幾分？特別是①——我們有沒有一個玩家講得出來的情感錨點？"},
+ {t:"可借鑑 A 級：零成本，可立即做",d:"不需預算、不需開發排期或極小。",
+  tier:"a|A 級 · 立即可做|"+
+   "<b>ASO 與 meta 關鍵字</b>：App 名稱隨當期主打機台改（嚦咕 App Store 直接叫「戰神賽特2首發登場」）；meta 塞錯字與競品名<br>"+
+   "<b>新機四件套配套</b>：一台新機同時配 人流轉盤 ＋ 儲值禮包 ＋ 押注外贈 ＋ 排行榜龍虎榜，把一台機榨出四種行為<br>"+
+   "<b>定時制人流</b>：把回訪從「一天一次」拆成多時段。豪神做 0／12／18／21 點，覆蓋 9 小時全市場最寬"},
+ {t:"可借鑑 B 級：需投資，但路徑清楚",d:"要預算或開發，但不需談判、不需外部資源。",
+  tier:"b|B 級 · 需投資|"+
+   "<b>儲值遊戲化改造</b>：把「加贈 20%」改成「儲值即抽獎」（儲值小瑪莉、滿額轉輪、滿購抽卡、驚喜抽抽樂）<br>"+
+   "<b>贈禮迴圈遊戲化</b>：儲值 → 送禮 → 收禮積分 → 排行榜，三段閉環（豪神 5/29、6/05、6/19、7/23 四檔）<br>"+
+   "<b>支援金／翻身金</b>：輸光玩家的續命底盤，不是活動。豪神打「全台首創」並綁 VIP 與時段<br>"+
+   "<b>階段式／七日型結構</b>：拉長付費週期，把單次消費變成連續承諾"},
+ {t:"抄不動 C 級：結構性門檻，先認清",d:"不是企劃能力問題，是資源與時間問題。",
+  tier:"c|C 級 · 抄不動|"+
+   "<b>代言人</b>：吳宗憲、陳雷、曾莞婷都是長期關係非檔期，成本量級未知<br>"+
+   "<b>媽祖公益 IP</b>：豪神自 2008 年資助鎮瀾兒童家園、累計捐款破 1,200 萬才換到主流媒體版面 —— 這是<b>十七年的關係</b>，不是一個檔期<br>"+
+   "<b>繞過 IAP 的網頁儲值通路</b>：省下 30% 抽成才給得起「110% 回饋」。豪神的 MyCard 教學頁最早可追到 2019 年<br>"+
+   "<b>原廠首發窗口</b>：豪神與嚦咕搶同一批 ATG／RSG 檔期只差 2 天（但這端客群本來就不吃）"},
+ {t:"議題一的決策判準",d:"三個都是「是」→ 續走場所；有兩個以上「否」→ 需要重新想。",
+  kids:["我們能講出一個玩家記得住的<b>情感錨點</b>嗎？（不能是「公平公正」這種標配話術）",
+        "我們的<b>自研內容能力</b>足以持續供給場所端要的機台嗎？",
+        "我們願意投資<b>贈禮／社交軌道</b>，並接受它帶來的幣商生態嗎？"],
+  q:"若三題有兩題以上答不出來，繼續留在場所端的結果很可能就是王牌 —— 不是輸給對手，是沒有人把我們當首選。"}
+ ]},
+
+{n:2,c:"--q2",t:"議題二：要不要做第二品牌？",tag:"決策",
+ nodes:[
+ {t:"決定性證據：同樣雙品牌，結果完全相反",d:"兩集團都共用玩法庫、都同檔期並行九成時間，變數被控制掉了。",
+  table:`<tr><th></th><th>芬格系（豪神＋嚦咕）</th><th>老子系（老子＋王牌）</th></tr>
+  <tr><td>主品牌單獨 YoY</td><td class="n">+26.5%</td><td class="n">+1.1%</td></tr>
+  <tr><td>副品牌單獨 YoY</td><td class="n up">+104.3%</td><td class="n dn">−24.9%</td></tr>
+  <tr><td>副品牌增量</td><td class="n up hl">+132.6M</td><td class="n dn">−9.1M</td></tr>
+  <tr><td>副品牌佔集團增量</td><td class="n hl">68%</td><td class="n dn">負貢獻</td></tr>
+  <tr><td><b>集團 YoY</b></td><td class="n up"><b>+53.6%</b></td><td class="n dn"><b>−3.3%</b></td></tr>`,
+  ev:"<b>副品牌把芬格系從 +26.5% 拉到 +53.6%，把老子系從 +1.1% 拉到 −3.3%。</b><br>做了但做壞，比不做還糟。"},
+ {t:"差別在哪：五個機制，老子系五項全失",d:"",
+  table:`<tr><th>機制</th><th>芬格系</th><th>老子系</th></tr>
+  <tr><td>① 客群分工</td><td>豪神守場所、嚦咕攻現金網</td><td class="dn">兩家都在中間游移</td></tr>
+  <tr><td>② 內容不重複</td><td class="up">新機重疊 1 款（10%）</td><td class="dn">重疊 12 款（29%）</td></tr>
+  <tr><td>③ 客群獨立</td><td class="up">日營收相關 −0.123（唯一負）</td><td>+0.147</td></tr>
+  <tr><td>④ 投資組合效應</td><td class="up">波動下降 34%</td><td>下降 9%</td></tr>
+  <tr><td>⑤ 副品牌佔比趨勢</td><td class="up">35% → 46%（雙引擎）</td><td class="dn">17% → 13%（拖油瓶）</td></tr>`,
+  ev:"⑤ <b>副品牌佔比的趨勢方向，是判斷雙品牌健康與否最快的單一指標。</b>"},
+ {t:"⚠ 「當試驗場」這條路，資料上是失敗的",d:"這是最反直覺的一點。",
+  table:`<tr><th></th><th>副品牌先行</th><th>主品牌先行</th><th>同期</th></tr>
+  <tr><td>芬格系</td><td class="n">4 項</td><td class="n">5 項</td><td class="n">4 項</td></tr>
+  <tr><td>老子系</td><td class="n hl">6 項</td><td class="n">1 項</td><td class="n">1 項</td></tr>`,
+  kids:["老子系的先行案例：階段式任務 <b>77 天</b>、捕魚 <b>63 天</b>、七日禮包 38 天、VIP 23 天、扭蛋 21 天、外贈 14 天",
+        "這是教科書級的試驗場結構 —— 但集團 −3.3%",
+        "芬格系完全沒有主從關係，兩邊各自創新再互相參考 —— 集團 +53.6%"],
+  ev:"<b>為什麼試驗場會失敗：</b>① 副品牌只被賦予「試」的任務、不被賦予「贏」的任務，拿不到代言與獨家內容投資；② 13% 規模又在萎縮，樣本小且不具代表性；③ 內在矛盾 —— 試驗場要有效就得夠像主品牌，夠像就會互食。<br>因果也可能是反的：<b>不是因為當試驗場所以做不起來，而是因為做不起來才只好拿來當試驗場。</b>"},
+ {t:"✗ 導流假說：資料上完全看不到",d:"若副品牌會把人送給主品牌，應出現顯著正的滯後相關。",
+  table:`<tr><th>滯後</th><th>嚦咕→豪神</th><th>王牌→老子</th></tr>
+  <tr><td>0 天</td><td class="n">−0.123</td><td class="n">+0.147</td></tr>
+  <tr><td>7 天</td><td class="n">+0.059</td><td class="n">−0.078</td></tr>
+  <tr><td>28 天</td><td class="n">−0.004</td><td class="n">+0.174</td></tr>`,
+  ev:"全部接近零、方向不穩定。<b>兩組都沒有導流證據。</b>不要用「幫主品牌導流」當第二品牌的立案理由。"},
+ {t:"那副品牌對主品牌的真實意義是什麼？",d:"（推論，外部無直接證據）",
+  kids:["<b>佔位／阻絕</b>：市場在萎縮，嚦咕吃下的 260M 不是自家吃就是包你發或滿貫吃",
+        "<b>談判籌碼</b>：兩品牌一起談 ATG／RSG 授權、超商通路、MyCard 金流",
+        "<b>風險對沖</b>：34% 波動下降是實打實的；主品牌若踩雷還有第二條腿"]},
+ {t:"第二品牌成立要件檢查表",d:"五題全過才建議做。任一題答不出來，先別開。",
+  kids:["<b>① 它要打誰？</b>必須是我們現在打不到的一端（若我們是場所端，第二品牌就該是現金網端）",
+        "<b>② 內容能不重複嗎？</b>若第二品牌要上同一批機台，等於同一筆成本買到重疊用戶",
+        "<b>③ 它的專屬物是什麼？</b>嚦咕＝ATG 正版首發。答不出來就會變王牌",
+        "<b>④ 我們願意獨立投資它嗎？</b>代言、IP、獨家授權 —— 還是只想當試驗場？",
+        "<b>⑤ 三年後它佔比會往上還是往下？</b>往下就是老子系路徑"],
+  q:"如果只是想要一個試驗場：A/B test、分區測試、灰度發布都比開一個品牌便宜幾個量級。不要為了測試而開品牌。"},
+ {t:"決策樹",d:"",
+  tree:`議題一先答：我們的客群主要在哪一端？
+│
+├─ 答不出來（目前狀態）
+│   └─→ 先補資料，兩個議題都還不能決策
+│       · 補齊週報登錄　· 盤點自家客群來源　· 實機驗證競品規格
+│
+├─ 場所端
+│   ├─ 有專屬情感錨點 ──→ 續走場所，照 A／B 級清單借鑑
+│   │                     第二品牌可考慮攻現金網端（嚦咕模式）
+│   └─ 沒有專屬錨點 ────→ 先建錨點，不要開第二品牌
+│                         （會變成王牌：兩邊都做、無人首選）
+│
+└─ 現金網端
+    ├─ 拿得到原廠首發窗口 ──→ 照嚦咕模式，門票是「正版」
+    └─ 拿不到窗口 ──────────→ 這端進不去，回到場所端`},
+ {t:"議題二的收斂句",d:"",
+  ev:"<b>雙品牌的優勢不在「有兩個品牌」，而在「副品牌是不是打到主品牌打不到的人」。</b><br>打到了，就是 +133M 的第二引擎、34% 的波動下降、越來越平衡的雙輪；<br>沒打到，就是同一批內容餵兩個殼、−9M 的失血、和越走越歪的 13%。"}
+ ]},
+
+{n:3,c:"--cash",t:"兩種玩家的特性差異",tag:"基礎認知",
+ nodes:[
+ {t:"遊戲類型偏好：虎機 vs 場所機種",d:"這是最直接的分野。",
+  table:`<tr><th></th><th>現金網玩家</th><th>場所玩家</th></tr>
+  <tr><td>主玩機種</td><td>虎機（老虎機）為壓倒性主體</td><td>水果盤（超八）、柏青哥／柏青斯洛、賽馬、7PK／5PK、小瑪莉、捕魚機</td></tr>
+  <tr><td>偏好的虎機型態</td><td>消除掉落型、倍數球累積、Megaways</td><td>經典轉軸連線、押分機</td></tr>
+  <tr><td>資料佐證</td><td class="hl">嚦咕新機 10 檔中虎機 7 檔（70%），無任何場所機種自研</td><td class="hl">豪神有自研「豪神 7PK」「豪神 21 點」「大超八」；王牌柏青 8 檔、老子柏青 5 檔</td></tr>`},
+ {t:"玩法節奏：短局高頻 vs 長局慢節奏",d:"節奏差異決定了活動該怎麼設計。",
+  table:`<tr><th></th><th>現金網玩家</th><th>場所玩家</th></tr>
+  <tr><td>單局長度</td><td><b>短</b>，快速旋轉、連續下注</td><td><b>長</b>，柏青一場可拉很久、賽馬有等待期、捕魚是持續性</td></tr>
+  <tr><td>核心機制</td><td><b>買免遊</b>（buy bonus／Extra Bet）、免費遊戲、倍數球</td><td>連線、押分、機況判讀（連莊、開分節奏）</td></tr>
+  <tr><td>單次遊玩時長</td><td>可短可長，追求爆分瞬間</td><td>偏長時間停留，帶陪伴性質</td></tr>
+  <tr><td>資料佐證</td><td>老子出現「續戰賽特-加 Extra Bet（FG 機率提升）」；包你發「棒球巨星+buybonus」</td><td>豪神人流活動佔比 <b>20%</b>（全市場最高），嚦咕僅 9%</td></tr>`},
+ {t:"看競品時看重的點：完全不同的兩套判準",d:"",
+  table:`<tr><th>評估面向</th><th>現金網玩家</th><th>場所玩家</th></tr>
+  <tr><td>第一眼看什麼</td><td class="hl">有沒有正版原廠、有沒有首發</td><td class="hl">有沒有我熟的那台機</td></tr>
+  <tr><td>好壞的語言</td><td>RTP、最高倍數、爆分頻率、機況軟硬</td><td>還原度（手感像不像實體）、機台齊不齊、開分節奏</td></tr>
+  <tr><td>「正版」的意義</td><td><b>關鍵信號</b>：代表體感跟現金版一致</td><td><b>沒感覺</b></td></tr>
+  <tr><td>社交需求</td><td>低，偏獨玩；看排行榜是為了確認平台真的會開</td><td><b>高</b>——實體遊藝場本身就是社交場所</td></tr>
+  <tr><td>對換現的態度</td><td>預設就要換，會主動找幣商，在意幣值與回收率</td><td>未必想換，但知道有這回事</td></tr>
+  <tr><td>吃哪種活動</td><td><b>影響期望值的</b>：外贈％、排行榜、儲值加碼</td><td><b>陪伴型的</b>：登入禮、支援金、抽獎、節慶</td></tr>`,
+  ev:"資料佐證：嚦咕押注佔 28%、排行榜 9%（皆高於豪神的 24%／5%）；豪神人流佔 20%、贈禮軌道 4 檔（嚦咕 0），錢街組隊戰隊 6 檔。<br><b>場所端的活動是「陪你玩」，現金網端的活動是「幫你贏」。</b>"},
+ {t:"⚠ 這一節的性質",d:"",
+  ev:"<b>以上為推論框架，非實測分群。</b>由內容組合、活動結構、代言選擇、ASO 關鍵字反推而來，<b>未經玩家調研驗證</b>。玩法節奏與社交需求兩項推論成分最重，機種偏好一項有較硬的資料支撐。"}
+ ]},
+
+{n:4,c:"--place",t:"依近期遊戲列表判斷各家類型",tag:"實證分類",
+ nodes:[
+ {t:"嚦咕｜10 檔　→　現金網型（最純）",d:"",
+  kids:["<b>虎 7</b>：ATG 古神巴風特、奢華、暗夜女王、永恆黃昏、無雙呂布、綠林俠影、棒球 sho-time",
+        "押分 1（瘋狂疊疊樂）、柏青 1（超悟空傳）、特 1（7pk — H5）",
+        "<b>零場所機種自研</b>；全部是現代電子美術風格"],
+  ev:"判定：<b>現金網型</b>。虎機佔 70%，主軸是原廠授權與現代電子主題。"},
+ {t:"豪神｜13 檔　→　場所型（含自研撲克）",d:"",
+  kids:["<b>虎 8</b>：ATG 古神巴風特、雷霆神錘 2、大超八、跳高高、麻將到了、台灣隊長、賞金對決",
+        "<b>特 2</b>：<b>豪神 21 點、豪神 7PK</b>（自研撲克，冠自家品牌名）",
+        "魚 1（三國戰場）、押分 1、憲哥刮刮樂-媽祖刮刮樂"],
+  ev:"判定：<b>場所型</b>。大超八是水果盤、自研 7PK 與 21 點是電動間經典，且把品牌名冠在機台上（<b>豪神</b>7PK）—— 這是自有內容資產的做法。"},
+ {t:"⚠ 王牌｜45 檔　→　三頭燒，無類型",d:"全市場新機最多，也是衰退最深的一家。",
+  kids:["<b>虎 26</b>：ATG 武俠／賽特1／賽特2-覺醒之力／赤三國（現金網訊號）",
+        "同一批虎機裡又有 <b>NETENT 帕德嫩</b>、<b>Evolution-Gonzo's Quest</b>、Finn's Golden Tavern、Fruit Shop、Let It Brun（<b>國際大廠 API</b>）",
+        "<b>柏青 8</b>：8 款機台、CR RUSH 上班族、大紅花 GOLD、戰國 RENO、柏青 LINK 吉宗、究極賓果 Classic（場所訊號）",
+        "另有柏青斯洛、牌桌、魚 4、特 3"],
+  ev:"<b>ATG（台灣現金網）＋ NETENT／Evolution（國際真錢）＋ 柏青（場所）三條線同時燒。</b>45 檔新機分散在三種完全不同的客群語彙上，難怪沒有一端把它當首選。"},
+ {t:"老子｜41 檔　→　無焦點，偏現金網但混雜",d:"",
+  kids:["<b>虎 23</b>：ATG 孫行者、續戰賽特（加 Extra Bet）、NETENT 帕德嫩、三開女武神、天神荷魯斯、富貴龍燈",
+        "柏青 5（南島音樂祭、大紅花 GOLD、百萬冥神、雷電魔龍）、魚 5（巨鯨傳說、深海戰記-霸主賽特）",
+        "與王牌<b>重疊 12 款</b>：NETENT 帕德嫩、三開女武神、大紅花 GOLD、深海戰記-霸主賽特、雷電魔龍…"],
+  ev:"與王牌同集團，內容重疊 29%。兩家一起把 ATG、NETENT、柏青全做了。"},
+ {t:"★ 新發現：國際大廠 API 開始進入台灣 SCG",d:"王牌與老子都上了 NETENT，王牌另有 Evolution。",
+  ev:"NETENT、Evolution 是<b>國際真錢博弈的標準供應商</b>，過去在台灣 SCG 少見。這是內容供給國際化的早期訊號，但目前<b>上這些機的兩家都在衰退</b>——代表台灣玩家對國際大廠的品牌認知度，遠不如對 ATG／RSG 的認知度。"},
+ {t:"包你發｜24 檔　→　場所偏向，自研為主",d:"",
+  kids:["虎 12：棒球巨星（+buybonus）、金龍迎吉、五獅爆喜、戰國霸主-信長、火神赫菲斯、神王奧丁",
+        "魚 6：三國-財神到、海皇系列、霹靂遊俠、海盜大掠奪",
+        "特 3（奧馬哈、德州撲克、小雞過馬路）、柏青 1（黑帝斯）、押分 1（跳龍門）",
+        "另有雷神索爾系列（現金網訊號 8）"]},
+ {t:"錢街｜6 檔　→　純場所，靠活動不靠新機",d:"新機全市場倒數，成長率卻第二高（+41.9%）。",
+  kids:["虎 6：三國世足、傳奇巫師、撲克爆好玩、棒球大聯盟、絕命死神、警察抓小偷（全自研風格）",
+        "零授權、零柏青、零魚機",
+        "改用<b>排行榜 41 檔（佔活動 40%）＋ 組隊戰隊 6 檔</b>撐流量"],
+  ev:"<b>錢街證明了：新機不是必要條件。</b>用競賽與社群機制也能長，但月度波動大（3 月 19.6M → 7 月 12.8M），天花板較低。"},
+ {t:"星城｜33 檔　→　完全封閉自研，自成一格",d:"零原廠授權訊號。",
+  kids:["魚 10：<b>鯊很大系列</b>（爆竹虎、發財虎、兔寶船、年獸、紅包鯊）、鯊 2／鯊 4 衍生",
+        "虎 11：天使奧丁、攻殼機動隊 SAC_2045、暗黑馬戲團、青蛙大仙、香香上菜（多人共玩）",
+        "另有星城刮好運（刮刮卡）、遊樂場迷你遊戲區（踩地雷、翻硬幣、KENO…）"],
+  ev:"星城訊號分類為 0 不是因為沒有傾向，而是<b>它自研內容不使用這些通用名稱</b>。它有完整的自有 IP 生態（鯊很大、刮好運、遊樂場），靠 51% 市佔的規模慣性 —— 但仍 −11.5%，淨減 262.5M。"},
+ {t:"滿貫 3 檔／金好運 1 檔　→　登錄不全，無法判定",d:"",
+  ev:"滿貫僅（虎）北海英雄、超級足球 2、（魚）淘氣鯊；金好運僅（魚）深海秘寶。<b>這不太可能是真實的新機投放量</b>，應為週報登錄缺漏。"}
+ ]},
+
+{n:5,c:"--data",t:"平台規格風格 × 數據成長的交叉驗證",tag:"驗證",
+ nodes:[
+ {t:"活動結構比例 vs 成長率",d:"用比例看（跨品牌絕對檔數不可靠）。",
+  table:`<tr><th>品牌</th><th>新機</th><th>押注</th><th>儲值</th><th>排行榜</th><th>人流</th><th>YoY</th></tr>
+  <tr><td>嚦咕</td><td class="n">14%</td><td class="n">28%</td><td class="n hl">31%</td><td class="n">9%</td><td class="n">9%</td><td class="n up">+104.3%</td></tr>
+  <tr><td>豪神</td><td class="n">13%</td><td class="n">24%</td><td class="n hl">32%</td><td class="n">5%</td><td class="n hl">20%</td><td class="n up">+26.5%</td></tr>
+  <tr><td>錢街</td><td class="n">6%</td><td class="n">25%</td><td class="n">9%</td><td class="n hl">40%</td><td class="n">12%</td><td class="n up">+41.9%</td></tr>
+  <tr><td>老子</td><td class="n hl">35%</td><td class="n">33%</td><td class="n">14%</td><td class="n">10%</td><td class="n">3%</td><td class="n">+1.1%</td></tr>
+  <tr><td>王牌</td><td class="n hl">29%</td><td class="n">33%</td><td class="n">8%</td><td class="n">10%</td><td class="n">5%</td><td class="n dn">−24.9%</td></tr>
+  <tr><td>星城</td><td class="n hl">43%</td><td class="n">24%</td><td class="n dn">3%</td><td class="n dn">0%</td><td class="n dn">3%</td><td class="n dn">−11.5%</td></tr>
+  <tr><td>金好運</td><td class="n">3%</td><td class="n">18%</td><td class="n">13%</td><td class="n hl">49%</td><td class="n">8%</td><td class="n dn">−15.6%</td></tr>`,
+  ev:"<b>三個模式：</b>① 儲值佔比 30%+ 的兩家（嚦咕、豪神）成長最穩；② 新機佔比 29%+ 的三家（星城、老子、王牌）全部衰退或持平；③ 極端押注單一手法的（錢街排行榜 40%、金好運 49%）——錢街成長但波動大，金好運衰退。"},
+ {t:"儲值活動的「型態」才是差異，不是數量",d:"這是規格風格層次的關鍵。",
+  table:`<tr><th>型態</th><th>做法</th><th>誰在做</th></tr>
+  <tr><td class="hl">遊戲化型</td><td>儲值小瑪莉、滿額轉輪、滿購抽卡、金字塔探秘、暴富轉盤、幸運洞洞樂</td><td class="up">豪神、嚦咕</td></tr>
+  <tr><td>折扣加贈型</td><td>商城金幣加贈 20%（重複三次）</td><td class="dn">金好運</td></tr>
+  <tr><td>通路型</td><td>超商、電信限定（OK、全家、萊爾富、台灣大哥大、小北）</td><td>星城</td></tr>`,
+  ev:"<b>付錢的當下就有一次抽獎，把消費瞬間變成遊戲瞬間。</b>豪神更接出社交贈禮迴圈：儲值→送禮→收禮積分→排行榜三段閉環。"},
+ {t:"成長曲線型態驗證：兩種不同的成功",d:"",
+  kids:["<b>豪神＝穩定複利</b>：36.4M（2025-01）連續 19 個月緩坡爬到 56.1M（2026-07），全市場唯一 2026 下半年仍創新高",
+        "<b>嚦咕＝階梯躍升</b>：2025-02→04 翻 2.5 倍（成因未解）；2025-10→11 再跳一階（<b>2025-08-21 曾莞婷代言＋ATG 正版首發同步宣布</b>）；2026 全年橫盤",
+        "對應到規格風格：豪神鋪長線（媽祖 143 天、人流覆蓋 9 小時），嚦咕靠事件（代言、首發、新機三件套）"],
+  ev:"代言效果實證：以 2025-08 為基期 100，嚦咕三個月走到 <b>143</b>，同期市場掉到 94、同集團的豪神 102。<b>相對市場超額 +49pp。</b>"},
+ {t:"時段規格：豪神鋪滿，別人押單點",d:"",
+  kids:["<b>21:00 是全市場紅海</b>：6 家品牌、10 個檔次壓在同一小時",
+        "<b>04–11、14–17 全市場空白</b>：對應睡眠與上班時段 → 他們預設的是有固定作息的玩家",
+        "<b>豪神覆蓋 9 小時全市場最寬</b>（0、12–13、18–23），且 0 點與 12 點密度僅次於 21 點 —— 刻意經營低競爭時段",
+        "金好運、星城、滿貫查無任何帶時段的人流活動"]}
+ ]},
+
+{n:6,c:"--warn",t:"台灣市場現況推測",tag:"推論",
+ nodes:[
+ {t:"① 市場已進入存量博弈",d:"成長只能來自搶別人的。",
+  kids:["2025H1 4,155M → 2026H1 3,950M，<b>市場總量 −5.0%</b>",
+        "大盤淨減 <b>206M</b>，芬格系淨增 <b>195M</b>",
+        "<b>流失的量幾乎等額被同一家吃走</b>"],
+  ev:"這不是成長故事，是重分配故事。任何「把餅做大」的立案理由都需要更強的證據。"},
+ {t:"② 龍頭在鬆動，星城是最大的可掠奪池",d:"",
+  kids:["星城 2026H1 仍佔 <b>51.4%</b>，但 YoY <b>−11.5%</b>、淨減 <b>262.5M</b>，是全市場最大失血方",
+        "它的內容是完全封閉自研（鯊很大、刮好運、遊樂場），零原廠授權",
+        "活動結構極端偏新機（43%），儲值僅 3%、排行榜 0%"],
+  ev:"星城仍有一半市場，但變現設計幾乎空白。<b>誰能提供星城玩家要的東西＋更好的變現體驗，誰就吃得到這塊。</b>"},
+ {t:"③ 現金網端目前供給不足 —— 最明顯的缺口",d:"",
+  kids:["全市場<b>只有嚦咕一家</b>是清楚的現金網定位，而它是成長最快的（+104.3%）",
+        "王牌、老子有現金網訊號但混雜柏青與國際 API，沒有一端把它們當首選",
+        "門票是<b>原廠授權首發</b>，豪神與嚦咕搶同一批 ATG／RSG 窗口只差 2 天"],
+  ev:"缺口明顯，但<b>門票有限且有窗口競爭</b>。這是機會也是門檻。"},
+ {t:"④ 場所端擁擠但需求仍在",d:"5 家在裡面，3 家仍成長。",
+  kids:["成長：錢街 +41.9%、豪神 +26.5%、HUGA +9.3%",
+        "衰退：包你發 −5.6%、王牌 −24.9%",
+        "分界線不是規模，是<b>有沒有專屬的情感錨點</b>"],
+  ev:"包你發 458M 比豪神 300M 大，卻是衰退的 —— <b>規模不能代替錨點。</b>"},
+ {t:"⑤ 國際大廠 API 是新變數，但尚未見效",d:"",
+  kids:["王牌上了 NETENT 帕德嫩、Evolution-Gonzo's Quest；老子上了 NETENT 帕德嫩",
+        "這是國際真錢博弈的標準供應商，過去在台灣 SCG 少見",
+        "<b>但兩家都在衰退</b>"],
+  ev:"推測：台灣玩家對 NETENT／Evolution 的品牌認知度，<b>遠不如對 ATG／RSG 的認知度</b>。國際大牌不等於本地說服力 —— 授權要挑玩家認得的，不是挑國際知名的。"},
+ {t:"⑥ 幣值與贈禮軌道是隱形的競爭維度",d:"外部幾乎看不到，但可能是最根本的。",
+  kids:["有玩家對玩家的轉移軌道 → 幣商可運作 → 吃得到現金網端客群",
+        "無軌道（如大福）→ 幣商只能賣整支帳號 → 與現金網脫鉤",
+        "免費幣供給量直接決定幣值，幣值決定幣商生態能否成立"],
+  ev:"<b>這三件事必須一致。</b>若內容用原廠授權吸引現金網玩家，卻同時打擊幣商、又海量發免費幣，三個方向會互相抵銷。"},
+ {t:"⑦ 未來 12 個月的推測",d:"以下純屬推論，無直接證據。",
+  kids:["市場續縮或持平，<b>整併加速</b> —— 沒有專屬錨點的中小品牌（王牌、滿貫）壓力最大",
+        "星城的 51% 會繼續被侵蝕，但侵蝕速度取決於它會不會補上變現設計",
+        "現金網端若出現第二家有原廠首發能力的品牌，嚦咕的超額成長會收斂",
+        "<b>雙品牌集團化</b>可能成為主流結構（目前 9 個品牌已有 4 個屬於兩個集團）"],
+  q:"如果整併是趨勢，我們的問題就不只是「怎麼成長」，而是「三年後我們是被整併的還是整併別人的」。"}
+ ]},
+
+{n:7,c:"--data",t:"決策前必須先補的資料",tag:"前置",
+ nodes:[
+ {t:"★ 最關鍵：我們自己的客群從哪一端來？",d:"目前兩種訊號都是 0，等於我們答不出這題。兩個議題都卡在這裡。",
+  ev:"這不只是週報登錄問題。<b>需要的是自家玩家的來源與行為數據</b>：他們玩哪些機台？認不認得 ATG／RSG？有沒有在幣商生態裡？"},
+ {t:"贈禮／轉移軌道的實機驗證",d:"這決定我們在「幣商型 ↔ 純 SCG」光譜上的真實位置。",
+  kids:["兩家競品各開一帳號，確認：能否轉移遊戲幣、單日／單次上限、是否綁 VIP 等級、有無手續費",
+        "同時確認我們自己的贈禮規格與實際使用量",
+        "嚦咕的贈禮軌道週報顯示 0，但那只代表沒做成活動，<b>不代表沒有系統</b>"],
+  ev:"判準：<b>有玩家對玩家的轉移管道 → 幣商可運作 → 灰色幣商型產品。</b>大福只能賣整支帳號，就是因為沒有這條軌道。官方禁不禁止是公關。"},
+ {t:"補齊金好運與滿貫大亨的週報登錄",d:"金好運 39 檔、滿貫 36 檔，不到豪神 105 檔的 40%。",
+  ev:"補齊後才能做真正的活動量與結構對比。目前<b>跨品牌的絕對檔數排名不可靠</b>。"},
+ {t:"2025 年的活動紀錄",d:"週報只有 2026 年 1–7 月。",
+  kids:["嚦咕 2025-02→04 第一階躍升（11.0M → 28.2M，兩個月 2.5 倍）成因仍未解",
+        "第二階已解：2025-08-21 曾莞婷代言 ＋ ATG 正版首發同步宣布，三個月 +43%（同期市場 −6%）"]},
+ {t:"對外引用前需再查證的項目",d:"",
+  kids:["豪神與嚦咕、老子與王牌的集團關係（公開登記為獨立法人，查無佐證）",
+        "幣值數字（買賣價差）—— 來源皆為有利益關係的幣商聯盟站，<b>不宜引用具體數字</b>",
+        "VIP 等級與門檻 —— 外部最詳細的一篇是 AI 生成、自承假設性數據",
+        "代言人的實際投放量級 —— 公開資料無量化數字"]}
+ ]}
+];
+
+const tree=document.getElementById('tree');
+let total=0;
+DATA.forEach((b,bi)=>{
+  const el=document.createElement('div');
+  el.className='branch'; el.style.setProperty('--bc',`var(${b.c})`);
+  let body='';
+  b.nodes.forEach((nd,ni)=>{
+    total++;
+    body+=`<div class="node" data-id="${bi}-${ni}"><div class="nhead">
+      <div class="chk" data-k="${bi}-${ni}"></div><div class="ntitle">${nd.t}</div></div>`;
+    if(nd.d) body+=`<div class="ndesc">${nd.d}</div>`;
+    if(nd.kids) body+=`<div class="kids">${nd.kids.map(k=>`<div class="leaf">${k}</div>`).join('')}</div>`;
+    if(nd.table) body+=`<table>${nd.table}</table>`;
+    if(nd.tier){const[c2,h,...r]=nd.tier.split('|');body+=`<div class="tier ${c2}"><b>${h}</b>${r.join('|')}</div>`}
+    if(nd.tree) body+=`<div class="tree">${nd.tree}</div>`;
+    if(nd.ev) body+=`<div class="ev">${nd.ev}</div>`;
+    if(nd.q) body+=`<div class="q">${nd.q}</div>`;
+    body+=`</div>`;
+  });
+  el.innerHTML=`<div class="bhead"><span class="caret">▶</span><span class="bnum">${b.n}</span>
+    <span class="btitle">${b.t}</span><span class="btag">${b.tag}</span></div>
+    <div class="bbody">${body}</div>`;
+  el.querySelector('.bhead').onclick=()=>el.classList.toggle('open');
+  tree.appendChild(el);
+});
+document.getElementById('pt').textContent=total;
+
+let state={};
+try{state=JSON.parse(localStorage.getItem('gh_decision_mind')||'{}')}catch(e){state={}}
+function paint(){
+  let n=0;
+  document.querySelectorAll('.chk').forEach(c=>{
+    const on=!!state[c.dataset.k];
+    c.classList.toggle('done',on);
+    c.closest('.node').classList.toggle('done',on);
+    if(on)n++;
+  });
+  document.getElementById('pn').textContent=n;
+  try{localStorage.setItem('gh_decision_mind',JSON.stringify(state))}catch(e){}
+}
+document.querySelectorAll('.chk').forEach(c=>{
+  c.onclick=e=>{e.stopPropagation();state[c.dataset.k]=!state[c.dataset.k];paint()};
+});
+document.querySelectorAll('.ntitle').forEach(t=>{
+  t.onclick=()=>{const c=t.closest('.nhead').querySelector('.chk');
+    state[c.dataset.k]=!state[c.dataset.k];paint()};
+});
+paint();
+document.getElementById('exp').onclick=()=>document.querySelectorAll('.branch').forEach(b=>b.classList.add('open'));
+document.getElementById('col').onclick=()=>document.querySelectorAll('.branch').forEach(b=>b.classList.remove('open'));
+document.getElementById('clr').onclick=()=>{if(confirm('清除所有討論勾選？')){state={};paint()}};
+document.getElementById('search').oninput=e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.node').forEach(n=>n.classList.remove('hit'));
+  if(!q){document.querySelectorAll('.branch').forEach(b=>b.classList.remove('hide'));return}
+  document.querySelectorAll('.branch').forEach(b=>{
+    let hit=false;
+    b.querySelectorAll('.node').forEach(n=>{
+      if(n.textContent.toLowerCase().includes(q)){n.classList.add('hit');hit=true}
+    });
+    if(b.querySelector('.btitle').textContent.toLowerCase().includes(q))hit=true;
+    b.classList.toggle('hide',!hit);
+    if(hit)b.classList.add('open');
+  });
+};
+document.querySelector('.branch').classList.add('open');
+</script>
+</body>
+</html>
