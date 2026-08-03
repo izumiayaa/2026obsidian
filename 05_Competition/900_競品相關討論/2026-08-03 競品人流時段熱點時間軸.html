@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>競品人流時段熱點時間軸</title>
+<style>
+:root{--bg:#0f1419;--panel:#161c24;--line:#2a3441;--txt:#e6edf3;--dim:#8b98a5;
+ --hot:#e8734a;--mid:#4a9de8;--cool:#4ac9a8;--warn:#e8c34a;--dead:#39424e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+ font-size:14px;line-height:1.6;padding:26px 20px 70px}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:22px;font-weight:700;margin-bottom:5px}
+.sub{color:var(--dim);font-size:12.5px;margin-bottom:24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px}
+h2{font-size:16px;font-weight:600;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:78px repeat(24,1fr);gap:2px;align-items:end}
+.zone{font-size:11px;text-align:center;color:var(--dim);padding-bottom:5px}
+.zone.on{color:var(--hot)}
+.bar{height:56px;display:flex;align-items:flex-end}
+.bar i{width:100%;border-radius:2px 2px 0 0;display:block}
+.cnt{font-size:11px;text-align:center;color:var(--dim);padding-top:3px}
+.cnt.on{color:var(--hot);font-weight:700}
+.cnt.mid{color:var(--txt);font-weight:600}
+.rowlab{font-size:13px;padding-right:6px;white-space:nowrap}
+.cell{height:17px;border-radius:2px}
+.axis{font-size:11px;color:var(--dim);text-align:left;padding-top:6px}
+.lab{font-size:11.5px;color:var(--dim);margin-top:16px;display:flex;gap:18px;flex-wrap:wrap}
+.lab span{display:flex;align-items:center;gap:6px}
+.sw{width:13px;height:13px;border-radius:3px;display:inline-block}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+th{background:#11161d;color:var(--dim);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.hl{color:var(--warn);font-weight:700}
+.dn{color:#e84a6f}.up{color:#3fb950}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:16px}
+.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi small{color:var(--dim);font-size:12px}
+.kpi b{display:block;font-size:24px;font-weight:700;margin:3px 0 2px}
+.note{font-size:12.5px;color:var(--dim);border-left:3px solid var(--warn);padding:8px 12px;background:#1a1410;margin-top:12px;border-radius:0 6px 6px 0}
+footer{max-width:1120px;margin:24px auto 0;color:var(--dim);font-size:11.5px;border-top:1px solid var(--line);padding-top:12px;line-height:1.8}
+@media print{body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>競品人流時段熱點時間軸</h1>
+<div class="sub">資料來源：競品週報 2026-01-05 ~ 2026-07-27，自 883 檔活動中解析出明確時段設定者　·　產出 2026-08-03</div>
+
+<div class="kpi">
+  <div><small>絕對熱點</small><b style="color:var(--hot)">21:00</b><small>6 家品牌 · 10 個檔次重疊</small></div>
+  <div><small>完全空白</small><b>04–11</b><small>連續 8 小時無人設檔</small></div>
+  <div><small>豪神覆蓋時數</small><b class="up">9 小時</b><small>全市場最寬</small></div>
+  <div><small>金好運覆蓋時數</small><b class="dn">0 小時</b><small>查無任何時段設計</small></div>
+</div>
+
+<div class="card">
+<h2>一、全市場檔次密度（24 小時）</h2>
+<div class="grid" id="dense"></div>
+<div class="grid" id="cnt"></div>
+<div class="grid" id="axis1"></div>
+<div class="lab">
+  <span><i class="sw" style="background:var(--hot)"></i>密集（4 檔以上）</span>
+  <span><i class="sw" style="background:var(--mid)"></i>中度（2–3 檔）</span>
+  <span><i class="sw" style="background:var(--dead)"></i>零星或空白</span>
+</div>
+</div>
+
+<div class="card">
+<h2>二、各品牌時段覆蓋</h2>
+<div id="rows"></div>
+<div class="grid" id="axis2"></div>
+<div class="note">金好運、星城、滿貫大亨在週報中查無任何帶時段的人流活動。金好運與滿貫的週報登錄不完整，此處<b>不能直接判定為「沒有做」</b>；但星城登錄相對完整（76 檔）仍為零，可信度較高。</div>
+</div>
+
+<div class="card">
+<h2>三、五個時段的設計意圖</h2>
+<table>
+<tr><th>時段</th><th>推測作息情境</th><th>檔次</th><th>誰在做</th><th>典型活動</th></tr>
+<tr><td><b>00:00</b> 跨日</td><td>結算重置、睡前最後一輪</td><td class="n">4</td><td>豪神、錢街</td><td>抽籤、支援金加領、登入禮、組隊衝榜</td></tr>
+<tr><td><b>00–03</b> 深夜長尾</td><td>夜貓 / 輪班族</td><td class="n">2</td><td>錢街、包你發</td><td>23–02 組隊衝榜、02–04 發紅包</td></tr>
+<tr><td class="dn"><b>04–11</b> 空白</td><td>睡眠 + 通勤 + 上午工作</td><td class="n dn">0</td><td>—</td><td>全市場皆無</td></tr>
+<tr><td><b>12–13</b> 午休</td><td>午餐 / 午休空檔</td><td class="n hl">6+2</td><td>豪神、包你發、錢街</td><td>抽籤、支援金、搶紅包、紅包牆</td></tr>
+<tr><td class="dn"><b>14–17</b> 空白</td><td>下午工作</td><td class="n dn">0</td><td>—</td><td>全市場皆無</td></tr>
+<tr><td><b>18–19</b> 下班</td><td>通勤 / 晚餐</td><td class="n">4+3</td><td>豪神、嚦咕、錢街</td><td>抽籤、登入禮、鴻包樂翻天、短時競賽</td></tr>
+<tr><td class="hl"><b>20–23</b> 黃金夜間</td><td>晚間主戰場</td><td class="n hl">5 / 10 / 6 / 3</td><td>全部 6 家</td><td>火箭升空、紅包雨、紅包牆、排行榜、高設定</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>四、可讀出的三個結論</h2>
+<table>
+<tr><th>結論</th><th>依據</th></tr>
+<tr><td><b>他們預設的玩家是有固定上班作息的人</b>，不是全天候閒置族群</td><td>04–11、14–17 兩段完全空白，正好對應睡眠與上班時段；熱點全部落在午休、下班、夜間三個空檔</td></tr>
+<tr><td><b>21:00 是全市場公認的黃金點，且已經嚴重擁擠</b></td><td>6 家品牌、10 個檔次同時壓在這一小時。誰在 21 點開活動，是在跟所有人搶同一批注意力</td></tr>
+<tr><td><b>豪神的策略是「鋪滿」而非「押注單點」</b></td><td>覆蓋 0、12–13、18–23 共 9 小時，是全市場最寬；且 0 點與 12 點的檔次密度僅次於 21 點 —— 他刻意去經營別人不去的低競爭時段</td></tr>
+</table>
+<div class="note">反過來看，<b>02–04（包你發）和 23–02（錢街）是目前競爭最低的兩塊</b>。是機會還是因為那裡本來就沒人，需要用我們自己的分時活躍數據去驗證 —— 外部資料無法回答這個問題。</div>
+</div>
+
+<footer>
+<b>方法與限制</b><br>
+1. 時段資訊來自活動名稱中的明文標註（如「抽籤 0點12點18點21點」「火箭升空 (19-24)」）。<b>名稱未寫時段但實際有時段限制的活動無法被計入</b>，因此本圖是「下限」而非全貌。<br>
+2. 「檔次」計算方式：點狀事件（如 0/12/18/21 點抽籤）於每個時點各計 1 次；區間事件（如 19–24）於涵蓋的每個整點各計 1 次。同一品牌的不同活動分別計數。<br>
+3. 金好運與滿貫大亨的週報登錄不完整，其「0 小時」不可直接解讀為未執行。<br>
+4. 883 檔去重後活動中，僅 61 檔含時間或週期線索，其中 25 檔為明確時段設定。
+</footer>
+</div>
+
+<script>
+const H=[...Array(24).keys()];
+const CNT={0:4,1:1,2:1,3:1,12:6,13:2,18:4,19:3,20:5,21:10,22:6,23:3};
+const BR={
+ '豪神':{h:[0,12,13,18,19,20,21,22,23],c:'--hot',key:1},
+ '嚦咕':{h:[18,19,20,21,22],c:'--hot',key:1},
+ '錢街':{h:[0,1,12,18,19,20,21,22,23],c:'--mid',key:0},
+ '包你發':{h:[2,3,12,13,20,21],c:'--mid',key:0},
+ '王牌':{h:[21,22,23],c:'--mid',key:0},
+ '老子':{h:[21],c:'--mid',key:0},
+ '金好運':{h:[],c:'--dead',key:0},
+ '星城':{h:[],c:'--dead',key:0},
+ '滿貫大亨':{h:[],c:'--dead',key:0}
+};
+const ZONES=[[4,'深夜長尾',0],[8,'睡眠 + 通勤 + 上午工作（全空白）',0],[2,'午休',1],[4,'下午工作（空白）',0],[6,'黃金夜間',1]];
+
+let z='<div></div>';
+ZONES.forEach(([n,t,on])=>{z+=`<div class="zone${on?' on':''}" style="grid-column:span ${n}">${t}</div>`});
+const dense=document.getElementById('dense');
+dense.innerHTML=z+'<div style="font-size:11px;color:var(--dim);padding-bottom:2px">檔次密度</div>'+
+ H.map(h=>{const v=CNT[h]||0;const px=Math.round(v/10*56);
+  const col=v>=4?'var(--hot)':v>=2?'var(--mid)':v>0?'var(--dead)':'transparent';
+  return `<div class="bar"><i style="height:${px}px;background:${col}"></i></div>`}).join('');
+
+document.getElementById('cnt').innerHTML='<div></div>'+
+ H.map(h=>{const v=CNT[h]||0;const cls=v>=6?'cnt on':v>=4?'cnt mid':'cnt';
+  return `<div class="${cls}">${v||''}</div>`}).join('');
+
+const axis=()=>'<div></div>'+H.map(h=>`<div class="axis">${h%3===0?h:''}</div>`).join('');
+document.getElementById('axis1').innerHTML=axis();
+document.getElementById('axis2').innerHTML=axis();
+
+document.getElementById('rows').innerHTML=Object.entries(BR).map(([n,o])=>{
+ if(!o.h.length) return `<div class="grid" style="margin-bottom:3px"><div class="rowlab" style="color:var(--dim)">${n}</div>`+
+   `<div style="grid-column:span 24;height:17px;border:1px dashed var(--line);border-radius:2px"></div></div>`;
+ return `<div class="grid" style="margin-bottom:3px"><div class="rowlab" style="${o.key?'font-weight:700':'color:var(--dim)'}">${n}</div>`+
+  H.map(h=>{const on=o.h.includes(h);
+   return `<div class="cell" style="background:${on?`var(${o.c})`:'transparent'};opacity:${on?(o.key?1:.6):0}"></div>`}).join('')+'</div>';
+}).join('');
+</script>
+</body>
+</html>
