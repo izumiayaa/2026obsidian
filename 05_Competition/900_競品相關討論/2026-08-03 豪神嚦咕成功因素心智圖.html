@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>豪神 × 嚦咕 成功因素心智圖</title>
+<style>
+:root{
+  --bg:#0f1419; --panel:#161c24; --line:#2a3441; --txt:#e6edf3; --dim:#8b98a5;
+  --c1:#e8734a; --c2:#4a9de8; --c3:#c77dd4; --c4:#4ac9a8; --c5:#e8c34a; --c6:#8b98a5; --c7:#e84a6f;
+  --ok:#3fb950;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--txt); min-height:100vh;
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  font-size:15px; line-height:1.6; padding:24px 20px 80px;
+}
+header{max-width:1180px;margin:0 auto 22px}
+h1{font-size:23px;font-weight:700;letter-spacing:.5px}
+.sub{color:var(--dim);font-size:13px;margin-top:6px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+button{
+  background:var(--panel);color:var(--txt);border:1px solid var(--line);
+  padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;font-family:inherit;
+  transition:.15s;
+}
+button:hover{border-color:var(--c2);color:#fff}
+button.on{background:var(--c2);border-color:var(--c2);color:#04121f;font-weight:600}
+#search{
+  background:var(--panel);border:1px solid var(--line);color:var(--txt);
+  padding:7px 12px;border-radius:7px;font-size:13px;min-width:220px;font-family:inherit;
+}
+#search:focus{outline:none;border-color:var(--c2)}
+.prog{margin-left:auto;color:var(--dim);font-size:13px;white-space:nowrap}
+.prog b{color:var(--ok)}
+
+.wrap{max-width:1180px;margin:0 auto}
+.root{
+  background:linear-gradient(135deg,#1d2733,#161c24);
+  border:1px solid var(--line);border-left:4px solid var(--c1);
+  border-radius:10px;padding:16px 20px;margin-bottom:20px;
+}
+.root h2{font-size:17px;font-weight:700;margin-bottom:6px}
+.root p{color:var(--dim);font-size:13.5px}
+.kpi{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px}
+.kpi div{font-size:12.5px;color:var(--dim)}
+.kpi b{display:block;font-size:19px;color:var(--txt);font-weight:700;margin-top:2px}
+.kpi .up{color:var(--ok)} .kpi .dn{color:var(--c7)}
+
+.branch{
+  border:1px solid var(--line);border-radius:10px;margin-bottom:12px;
+  background:var(--panel);overflow:hidden;
+}
+.branch.hide{display:none}
+.bhead{
+  display:flex;align-items:center;gap:11px;padding:13px 16px;cursor:pointer;
+  border-left:4px solid var(--bc); user-select:none;
+}
+.bhead:hover{background:#1b222c}
+.caret{color:var(--dim);font-size:11px;transition:transform .18s;flex-shrink:0;width:11px}
+.branch.open .caret{transform:rotate(90deg)}
+.bnum{
+  background:var(--bc);color:#0b0f14;font-weight:700;font-size:11.5px;
+  padding:2px 8px;border-radius:20px;flex-shrink:0;
+}
+.btitle{font-weight:600;font-size:15.5px;flex:1}
+.btag{font-size:11.5px;color:var(--dim);border:1px solid var(--line);padding:2px 8px;border-radius:20px}
+.bbody{display:none;padding:2px 16px 14px 40px}
+.branch.open .bbody{display:block}
+
+.node{margin:9px 0;padding-left:14px;border-left:2px solid var(--line)}
+.node.hit{border-left-color:var(--c5)}
+.nhead{display:flex;align-items:flex-start;gap:9px}
+.chk{
+  width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;flex-shrink:0;
+  cursor:pointer;margin-top:4px;position:relative;transition:.15s;
+}
+.chk:hover{border-color:var(--ok)}
+.chk.done{background:var(--ok);border-color:var(--ok)}
+.chk.done::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;height:9px;
+  border:solid #0b0f14;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ntitle{font-weight:600;font-size:14px;cursor:pointer;flex:1}
+.node.done>.nhead .ntitle{color:var(--dim);text-decoration:line-through}
+.ndesc{color:var(--dim);font-size:13px;margin:4px 0 0 25px}
+.kids{margin-left:25px}
+.leaf{color:var(--dim);font-size:12.8px;margin:5px 0;padding-left:13px;position:relative}
+.leaf::before{content:"–";position:absolute;left:0;color:var(--line)}
+.leaf b{color:var(--txt);font-weight:600}
+.ev{
+  margin:8px 0 0 25px;padding:8px 11px;background:#11161d;border:1px solid var(--line);
+  border-radius:6px;font-size:12.5px;color:var(--dim);
+}
+.ev b{color:var(--c5)}
+.q{
+  margin:9px 0 0 25px;padding:8px 11px;background:#1a1410;border-left:3px solid var(--c5);
+  border-radius:0 6px 6px 0;font-size:12.8px;color:#e8d5a8;
+}
+.q::before{content:"討論題　";color:var(--c5);font-weight:700;font-size:11.5px}
+table{width:100%;border-collapse:collapse;margin:9px 0 0 25px;width:calc(100% - 25px);font-size:12.5px}
+th,td{border:1px solid var(--line);padding:5px 9px;text-align:left}
+th{background:#11161d;color:var(--dim);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.up{color:var(--ok)} .dn{color:var(--c7)} .hl{color:var(--c5);font-weight:700}
+footer{max-width:1180px;margin:26px auto 0;color:var(--dim);font-size:12px;
+  border-top:1px solid var(--line);padding-top:14px;line-height:1.8}
+@media print{
+  body{background:#fff;color:#000}
+  .toolbar,.chk{display:none}
+  .bbody{display:block!important}
+  .branch,.root{break-inside:avoid;border-color:#ccc}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>豪神 × 嚦咕　成功因素心智圖</h1>
+  <div class="sub">資料期間：每日總表 2025-01-02 ~ 2026-07-28｜競品週報 2026-01-05 ~ 2026-07-27　·　產出 2026-08-03</div>
+  <div class="toolbar">
+    <button id="exp">全部展開</button>
+    <button id="col">全部收合</button>
+    <input id="search" placeholder="搜尋關鍵字…">
+    <button id="clr">清除勾選</button>
+    <span class="prog">討論進度 <b id="pn">0</b> / <span id="pt">0</span></span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="root">
+    <h2>核心命題：這不是成長故事，是重分配故事</h2>
+    <p>市場總量 2025H1 → 2026H1 萎縮 5.0%（4,155M → 3,950M）。大盤淨減 206M，豪神集團淨增 195M —— <b>流失的量幾乎等額被同一家吃走</b>。</p>
+    <div class="kpi">
+      <div>豪神集團市佔<b class="up">8.8% → 14.2%</b></div>
+      <div>集團 YoY<b class="up">+53.6%</b></div>
+      <div>市場排名<b>第 2（越過包你發、金好運）</b></div>
+      <div>金好運 YoY<b class="dn">-15.6%</b></div>
+      <div>對金好運差距<b class="dn">0.77× → 2.10×</b></div>
+    </div>
+  </div>
+  <div id="tree"></div>
+</div>
+
+<footer>
+  <b>資料限制（討論時請一併說明）</b><br>
+  1. 金好運、滿貫大亨的週報活動登錄不完整（39 / 37 檔），<b>不可用活動數量推論投放不足</b>，僅可比較類型結構比例。<br>
+  2. 豪神與嚦咕的集團關係公開資料查無佐證，登記為兩獨立法人（芬格國際科技 / 博格網絡科技），合併計算依內部認知，對外需另補證據。<br>
+  3. 週報僅涵蓋 2026 年 1–7 月，嚦咕真正爆發期在 2025 年，該期間活動細節無紀錄。<br>
+  來源：每日總表 JSON、競品週報 JSON、icasino.tw 產業報告、App Store / Google Play、PChome 新聞（2026-04-16）
+</footer>
+
+<script>
+const DATA=[
+{n:1,c:"--c1",t:"變現設計：把「儲值」本身遊戲化",tag:"兩家共同 · 最強因子",
+ nodes:[
+ {t:"儲值活動密度全市場最高",d:"關鍵不在數量，在型態。別家做折扣，這兩家做遊戲。",
+  table:`<tr><th>品牌</th><th>儲值檔數</th><th>YoY</th></tr>
+  <tr><td>豪神</td><td class="n hl">34</td><td class="n up">+26.5%</td></tr>
+  <tr><td>嚦咕</td><td class="n hl">25</td><td class="n up">+104.3%</td></tr>
+  <tr><td>老子</td><td class="n">16</td><td class="n">+1.1%</td></tr>
+  <tr><td>王牌</td><td class="n">13</td><td class="n dn">-24.9%</td></tr>
+  <tr><td>包你發</td><td class="n">11</td><td class="n dn">-5.6%</td></tr>
+  <tr><td>錢街</td><td class="n">9</td><td class="n up">+41.9%</td></tr>
+  <tr><td>星城</td><td class="n dn">2</td><td class="n dn">-11.5%</td></tr>`},
+ {t:"子機制一：隨機獎勵包裝",d:"付錢的當下就有一次抽獎，把消費瞬間變成遊戲瞬間。",
+  kids:["<b>豪神</b>：儲值小瑪莉、儲值滿額轉輪、滿購抽卡、豪運福袋、儲值福袋",
+        "<b>嚦咕</b>：金字塔探秘、暴富轉盤、幸運洞洞樂、驚喜抽抽樂、儲值小瑪莉-驚喜抽抽樂"]},
+ {t:"子機制二：階段式／累積式結構",d:"拉長付費週期，把單次消費變成連續承諾。",
+  kids:["豪神：七日優惠禮、儲值-七日優惠禮","嚦咕：七日聚寶盆、七日挑戰、累積儲值、階段式禮包-端午送好禮"]},
+ {t:"子機制三：限量稀缺",d:"用次數上限製造急迫感。",
+  kids:["豪神：<b>110% 明日驚喜禮包（限 10 次）</b>"]},
+ {t:"子機制四：社交贈禮迴圈（豪神獨有）",d:"最值得抄的一條 —— 把儲值 → 送禮 → 競賽接成三段閉環，讓付費有社交出口。",
+  kids:["5/29 贈禮積分排行榜","6/05 收禮加速累積分（積分爭霸）","6/19 積分爭霸","7/23 收禮積分爭霸"],
+  ev:"意義：純消費會有空虛感，接上社交與競賽後，付費行為本身變成一種在社群中的<b>可見成就</b>。"},
+ {t:"外部通路綁定",d:"繞過 IAP 30% 抽成，並觸及不用信用卡的客層。",
+  kids:["豪神：全家（2/04）、MyCard（2/02）","嚦咕：GASH（2/04）、全家立即儲回饋（4/29）、藍新儲值送＋官方 LINE（4/30）"],
+  q:"金好運目前的儲值活動是折扣型還是遊戲型？「商城金幣加贈 20%」在週報重複出現三次，這是純折扣。"}
+ ]},
+
+{n:2,c:"--c2",t:"內容供給：新機數量是假議題",tag:"最反直覺的結論",
+ nodes:[
+ {t:"新機檔數與成長率呈負相關",d:"上最多新機的王牌，是衰退最快的之一。",
+  table:`<tr><th>品牌</th><th>新機檔數</th><th>YoY</th></tr>
+  <tr><td>王牌</td><td class="n hl">45</td><td class="n dn">-24.9%</td></tr>
+  <tr><td>老子</td><td class="n hl">41</td><td class="n">+1.1%</td></tr>
+  <tr><td>星城</td><td class="n">33</td><td class="n dn">-11.5%</td></tr>
+  <tr><td>包你發</td><td class="n">24</td><td class="n dn">-5.6%</td></tr>
+  <tr><td>豪神</td><td class="n">14</td><td class="n up">+26.5%</td></tr>
+  <tr><td>嚦咕</td><td class="n">11</td><td class="n up">+104.3%</td></tr>
+  <tr><td>錢街</td><td class="n">6</td><td class="n up">+41.9%</td></tr>`,
+  ev:"補充：王牌與老子的新機 <b>72% 同日開檔</b>、押注 <b>82% 同日開檔</b> —— 兩家在貼身互抄，結果是彼此稀釋。"},
+ {t:"層次一：正版原廠首發當品牌資產",d:"把授權首發權直接變成 ASO 關鍵字與品牌定位。",
+  kids:["嚦咕 App Store 名稱直接叫「<b>嚦咕麻將-戰神賽特2首發登場</b>」","兩家搶同一批 ATG／RSG 首發窗口：ATG 古神巴風特（豪神 5/12、嚦咕 5/14）","嚦咕另有 RSG 雷神之錘 II 新機預告（5/20）"]},
+ {t:"層次二：自研致敬作補長尾",d:"不付授權金的內容庫，撐日常供給。",
+  kids:["豪神賽特 / 豪神賽特 2、雷神之錘宙斯系列、超八水果盤（芬格自研）"]},
+ {t:"層次三：新機一律配套四件組",d:"一台新機被榨出四種玩家行為。別家上了機台就結束。",
+  kids:["<b>人流</b>：新機轉盤 / 預約新機 / 新機每日轉盤（豪神三國戰場、古神巴風特轉盤）",
+        "<b>儲值</b>：新遊禮包 / 新遊階段式禮包",
+        "<b>押注</b>：外贈（嚦咕「奢華外贈最高 35%」、豪神「外贈大超八」）",
+        "<b>排行榜</b>：新遊龍虎榜（嚦咕新機龍虎榜-奢華、新遊龍虎榜-ATG古神巴風特）"],
+  q:"我們的新機上線有沒有配套？還是純上架 ＋ 一個排行榜？"}
+ ]},
+
+{n:3,c:"--c3",t:"品牌與 IP：豪神的護城河",tag:"豪神獨有 · 最難複製",
+ nodes:[
+ {t:"長期代言人而非檔期代言",d:"品牌識別的錨點。",
+  kids:["豪神：<b>吳宗憲</b>，多支電視廣告，長期關係","嚦咕：<b>曾莞婷</b>"]},
+ {t:"大甲鎮瀾宮深度聯名 ＋ 公益綁定",d:"這是全份分析裡最難複製的一條。",
+  kids:["自 2008 年長期資助鎮瀾兒童家園，<b>累計捐款破 1,200 萬</b>",
+        "2026 遶境期間推「刮好運」，部分營收轉公益基金",
+        "取得 PChome 等主流媒體正面報導版面"]},
+ {t:"IP 在週報中是一條三個月主線，不是零散檔期",d:"貫穿儲值、押注、人流、代言四種形式。",
+  kids:["4/09　大甲媽祈福平安包（儲值）",
+        "4/13　儲值-大甲媽公益累儲 ＋ 鎮瀾宮大富翁（押注）＋ 大富翁-大甲媽繞境 ＋ 押注-抽獎券",
+        "4/13　<b>憲哥刮刮樂-媽祖刮刮樂</b>（代言人 × IP 疊加）",
+        "5/02、5/14、5/26　大甲媽平安禮包",
+        "6/07、6/19　大甲媽祈福禮包",
+        "7/13、7/25　媽祖平安禮包"],
+  ev:"三個價值：① 信仰 IP 對中高齡客層的說服力遠高於美術包裝；② 公益綁定<b>化解 social casino 的道德負擔</b>，換來買不到的媒體背書；③ 一個 IP 撐三個月，攤薄企劃成本並累積玩家期待節奏。"},
+ {t:"嚦咕是跟進，不是主導",d:"深度差距明顯。",
+  kids:["嚦咕媽祖相關僅：寶石商城上架媽祖商品（4/14）、儲值-媽祖祈福禮（4/17）",
+        "嚦咕自有 IP 是電影《嚦咕嚦咕新年財》聯名，推專屬角色"]},
+ {t:"時事熱點是基本盤，不是差異點",d:"兩家都做，別家也做。",
+  kids:["世足競猜（豪神 6/11、嚦咕 6/10）、棒球競猜（豪神 3/13、嚦咕 3/03）、端午"],
+  q:"我們有沒有能撐三個月的主線 IP？公益角度我們碰過嗎？"}
+ ]},
+
+{n:4,c:"--c4",t:"留存節奏：用「時段」切出回訪習慣",tag:"豪神為主",
+ nodes:[
+ {t:"人流活動檔數豪神全市場最高",d:"豪神 21 檔 · 嚦咕 7 檔 · 金好運 3 檔（註：金好運登錄不全）"},
+ {t:"關鍵是定時制，把一天切成多個回訪點",d:"不是「一天一次」，是「一天四次」。",
+  kids:["抽籤：<b>0 / 12 / 18 / 21 點</b>","支援金加領：0 / 12 點","火箭升空：19–24 點",
+        "紅包牆生肖奪寶：12–14 點 / 20–23 點","每日登入領足球幣：0 / 12 / 18 / 21 點"]},
+ {t:"嚦咕的對應設計較薄",d:"只有兩個時段。",
+  kids:["鴻包樂翻天：18–20 點；20:30–22:30（7/18、7/25）"]},
+ {t:"「翻身支援金」是底盤設計，不是活動",d:"給輸光的低消費玩家續命，維持 DAU 池不崩。",
+  kids:["豪神：支援金加領、支援金升級加領（3/12、4/13、7/27）","全台首創「翻身支援金」，純遊戲幣補貼"],
+  q:"我們的每日回訪誘因有幾個時間點？是「一天一次」還是「一天四次」？"}
+ ]},
+
+{n:5,c:"--c5",t:"雙品牌組合：共用玩法庫，錯開排檔",tag:"最有戰略意義",
+ nodes:[
+ {t:"玩法庫高度共用（同機制、不同時間）",d:"同一套 know-how 攤到兩個品牌，壓低邊際成本。",
+  table:`<tr><th>機制</th><th>豪神</th><th>嚦咕</th></tr>
+  <tr><td>儲值小瑪莉</td><td>3/04、5/20</td><td>5/18</td></tr>
+  <tr><td>疊疊樂塔樓衝刺</td><td>巔峰疊疊樂 2/10</td><td>瘋狂疊疊樂 1/31</td></tr>
+  <tr><td>大富翁</td><td>4/13、6/11</td><td>4/20、6/08、7/27</td></tr>
+  <tr><td>七日型禮包</td><td>七日優惠禮</td><td>七日聚寶盆、七日挑戰</td></tr>
+  <tr><td>超商通路</td><td>全家 2/04</td><td>全家 4/29</td></tr>
+  <tr><td>ATG 授權</td><td>古神巴風特 5/12</td><td>古神巴風特 5/14</td></tr>
+  <tr><td>賽事競猜</td><td>棒球 3/13、世足 6/11</td><td>棒球 3/03、世足 6/10</td></tr>`},
+ {t:"但排檔刻意錯開",d:"人流活動同日重疊率 0%，儲值也無同日開檔。",
+  ev:"推論：<b>同一套 know-how、兩組獨立營運團隊、刻意錯峰避免互食</b>。"},
+ {t:"客層分工",d:"兩個品牌覆蓋兩種客層。",
+  kids:["<b>豪神</b>：綜藝代言 / 中高齡 / 信仰向 / 自研經典機台","<b>嚦咕</b>：麻將入口 ＋ ATG 重度電子玩家 / 原廠首發向"]},
+ {t:"集團內部是交替接力，不是平行擴張",d:"",
+  table:`<tr><th>期間</th><th>豪神</th><th>嚦咕</th><th>合計</th></tr>
+  <tr><td>2025H1</td><td class="n">237M（65%）</td><td class="n">127M（35%）</td><td class="n">364M</td></tr>
+  <tr><td>2026H1</td><td class="n">300M（54%）</td><td class="n">260M（46%）</td><td class="n hl">559M</td></tr>
+  <tr><td>2026Q3</td><td class="n">56M（58%）</td><td class="n">41M（42%）</td><td class="n">97M</td></tr>`,
+  q:"他們不是一個品牌打贏，是用兩個品牌覆蓋兩種客層，再用同一套玩法庫壓低邊際成本。我們有沒有第二品牌的空間？"}
+ ]},
+
+{n:6,c:"--c6",t:"對照組反例：什麼是無效的",tag:"避坑",
+ nodes:[
+ {t:"王牌（-24.9%）與老子（+1.1%）：軍備競賽陷阱",d:"全市場最勤奮，成績最差。",
+  kids:["新機 45 / 41 檔、活動總量 157 / 120 檔，皆為全市場前二","新機 <b>72% 同日開檔</b>、押注 <b>82% 同日開檔</b>，兩家貼身互抄"],
+  ev:"結論：<b>活動量與新機量都不是成長變數，互抄只會稀釋。</b>"},
+ {t:"星城（-11.5%）：規模守成失敗",d:"本波最大失血方，2025H1→2026H1 淨減 262.5M。",
+  kids:["仍有 33 檔新機、51.4% 市佔","但儲值活動僅 <b>2 檔</b>、排行榜 <b>0 檔</b>","變現設計幾乎空白"],
+  ev:"結論：<b>規模不能代替變現設計。</b>"},
+ {t:"錢街（+41.9%）：單一手法的天花板",d:"排行榜 41 檔，佔其活動 40%，極端押注單一機制。",
+  kids:["月度劇烈波動：2026-03 衝到 19.6M → 2026-07 跌回 12.8M"],
+  ev:"結論：<b>單一手法能起量但不穩，撐不出結構性成長。</b>"}
+ ]},
+
+{n:7,c:"--c7",t:"對金好運的啟示",tag:"行動題",
+ nodes:[
+ {t:"先講資料限制",d:"金好運週報僅登錄 39 檔，不可比絕對數量。以下只用結構比例與日資料。"},
+ {t:"黃金交叉發生在 2025 年 4 月",d:"19 個月從落後 23% 到落後 110%。",
+  table:`<tr><th>月份</th><th>豪神集團</th><th>金好運</th><th>倍數</th></tr>
+  <tr><td>2025-01</td><td class="n">46.6M</td><td class="n">60.6M</td><td class="n up">0.77</td></tr>
+  <tr><td>2025-04</td><td class="n">70.1M</td><td class="n">61.0M</td><td class="n hl">1.15　交叉</td></tr>
+  <tr><td>2025-11</td><td class="n">88.2M</td><td class="n">47.7M</td><td class="n dn">1.85</td></tr>
+  <tr><td>2026-07</td><td class="n">97.2M</td><td class="n">46.3M</td><td class="n dn">2.10</td></tr>`},
+ {t:"活動結構比例：我們像錢街，不像豪神",d:"用比例看，不看絕對數。",
+  table:`<tr><th>類型</th><th>金好運</th><th>豪神</th><th>嚦咕</th></tr>
+  <tr><td>排行榜</td><td class="n hl">49%</td><td class="n">5%</td><td class="n">8%</td></tr>
+  <tr><td>儲值</td><td class="n">13%</td><td class="n hl">32%</td><td class="n hl">30%</td></tr>
+  <tr><td>人流</td><td class="n">8%</td><td class="n hl">20%</td><td class="n">8%</td></tr>
+  <tr><td>新機</td><td class="n">3%</td><td class="n">13%</td><td class="n">13%</td></tr>`,
+  ev:"我們的活動結構<b>極度偏向排行榜</b> —— 結構上像錢街。而錢街的曲線已證明這條路波動大、天花板低。"},
+ {t:"行動題一：儲值活動型態轉換",d:"從「加贈 20%」改成「儲值即抽獎」的遊戲化型態？"},
+ {t:"行動題二：主線 IP",d:"有沒有能撐三個月的主線 IP？信仰／在地／公益角度我們碰過嗎？"},
+ {t:"行動題三：新機配套強制化",d:"新機上線要不要強制配套四件組（轉盤＋禮包＋外贈＋龍虎榜）？"},
+ {t:"行動題四：回訪時段拆分",d:"每日回訪誘因要不要從「一天一次」拆成多時段？"}
+ ]},
+
+{n:8,c:"--c5",t:"待確認 / 待補資料",tag:"會後追",
+ nodes:[
+ {t:"豪神與嚦咕的集團關係，是否有可對外引用的佐證？",d:"公開登記為兩獨立法人，查無集團關係。"},
+ {t:"2025 年 3–4 月嚦咕第一階躍升（11.0M → 28.2M），成因？",d:"兩個月翻 2.5 倍。週報無此期間資料。"},
+ {t:"2025 年 10–11 月嚦咕第二階躍升（36.3M → 44.5M），成因？",d:""},
+ {t:"嚦咕的 ATG 授權是否為獨家首發？兩家誰先拿到原廠窗口？",d:"僅找到二手行銷內容。"},
+ {t:"吳宗憲／曾莞婷的實際廣告投放量級",d:"公開資料無量化數字。"},
+ {t:"兩家的儲值方案定價帶與 ARPPU",d:"外部查不到，需內部管道。"},
+ {t:"金好運與滿貫大亨的週報登錄補齊",d:"補齊後才能做真正的活動量對比。"}
+ ]}
+];
+
+const tree=document.getElementById('tree');
+let total=0;
+DATA.forEach((b,bi)=>{
+  const el=document.createElement('div');
+  el.className='branch'; el.style.setProperty('--bc',`var(${b.c})`);
+  let body='';
+  b.nodes.forEach((nd,ni)=>{
+    total++;
+    const id=`${bi}-${ni}`;
+    body+=`<div class="node" data-id="${id}"><div class="nhead">
+      <div class="chk" data-k="${id}"></div><div class="ntitle">${nd.t}</div></div>`;
+    if(nd.d) body+=`<div class="ndesc">${nd.d}</div>`;
+    if(nd.kids) body+=`<div class="kids">${nd.kids.map(k=>`<div class="leaf">${k}</div>`).join('')}</div>`;
+    if(nd.table) body+=`<table>${nd.table}</table>`;
+    if(nd.ev) body+=`<div class="ev">${nd.ev}</div>`;
+    if(nd.q) body+=`<div class="q">${nd.q}</div>`;
+    body+=`</div>`;
+  });
+  el.innerHTML=`<div class="bhead"><span class="caret">▶</span><span class="bnum">${b.n}</span>
+    <span class="btitle">${b.t}</span><span class="btag">${b.tag}</span></div>
+    <div class="bbody">${body}</div>`;
+  el.querySelector('.bhead').onclick=()=>el.classList.toggle('open');
+  tree.appendChild(el);
+});
+document.getElementById('pt').textContent=total;
+
+let state={};
+try{state=JSON.parse(localStorage.getItem('hs_lg_mind')||'{}')}catch(e){state={}}
+function paint(){
+  let n=0;
+  document.querySelectorAll('.chk').forEach(c=>{
+    const on=!!state[c.dataset.k];
+    c.classList.toggle('done',on);
+    c.closest('.node').classList.toggle('done',on);
+    if(on)n++;
+  });
+  document.getElementById('pn').textContent=n;
+  try{localStorage.setItem('hs_lg_mind',JSON.stringify(state))}catch(e){}
+}
+document.querySelectorAll('.chk').forEach(c=>{
+  c.onclick=e=>{e.stopPropagation();state[c.dataset.k]=!state[c.dataset.k];paint()};
+});
+document.querySelectorAll('.ntitle').forEach(t=>{
+  t.onclick=()=>{const c=t.closest('.nhead').querySelector('.chk');
+    state[c.dataset.k]=!state[c.dataset.k];paint()};
+});
+paint();
+
+document.getElementById('exp').onclick=()=>document.querySelectorAll('.branch').forEach(b=>b.classList.add('open'));
+document.getElementById('col').onclick=()=>document.querySelectorAll('.branch').forEach(b=>b.classList.remove('open'));
+document.getElementById('clr').onclick=()=>{if(confirm('清除所有討論勾選？')){state={};paint()}};
+document.getElementById('search').oninput=e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.node').forEach(n=>n.classList.remove('hit'));
+  if(!q){document.querySelectorAll('.branch').forEach(b=>b.classList.remove('hide'));return}
+  document.querySelectorAll('.branch').forEach(b=>{
+    let hit=false;
+    b.querySelectorAll('.node').forEach(n=>{
+      if(n.textContent.toLowerCase().includes(q)){n.classList.add('hit');hit=true}
+    });
+    if(b.querySelector('.btitle').textContent.toLowerCase().includes(q))hit=true;
+    b.classList.toggle('hide',!hit);
+    if(hit)b.classList.add('open');
+  });
+};
+document.querySelector('.branch').classList.add('open');
+</script>
+</body>
+</html>
